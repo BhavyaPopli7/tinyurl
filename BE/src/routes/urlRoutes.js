@@ -10,7 +10,7 @@ router.post('/shorten', shortenUrl);
 router.get('/getAllUrls', getAllUrl);
 
 //getURLdata
-router.get('/links/:code',getUrlDetail);
+router.get('/code/:code',getUrlDetail);
 
 // Redirect (/<shortcode>)
 router.get('/:code', redirectToOriginal);
