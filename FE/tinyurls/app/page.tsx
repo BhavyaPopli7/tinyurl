@@ -270,7 +270,7 @@ export default function HomePage() {
                     </td>
                     <td className="px-3 py-2 align-middle">
                       <Link
-                        href={`/links/${u.code}`}
+                        href={`/code/${u.code}`}
                         className="text-xs font-medium text-slate-900 underline-offset-2 hover:underline"
                       >
                         View
