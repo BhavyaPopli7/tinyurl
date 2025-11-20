@@ -325,7 +325,7 @@ export default function HomePage() {
         </button>
 
         <Link
-          href={`/links/${successCode}`}
+          href={`/code/${successCode}`}
           className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-50"
           onClick={() => setShowModal(false)}
         >
