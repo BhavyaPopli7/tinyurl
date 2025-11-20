@@ -121,7 +121,7 @@ export default function HomePage() {
             <input
               type="url"
               required
-              placeholder="https://open.spotify.com/search/karan"
+              placeholder="https://TinyUrls.com"
               value={targetUrl}
               onChange={(e) => setTargetUrl(e.target.value)}
               className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none ring-slate-700/10 focus:border-slate-500 focus:ring-2"

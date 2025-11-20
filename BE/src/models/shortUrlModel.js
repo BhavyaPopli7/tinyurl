@@ -14,7 +14,7 @@ async function createShortUrl(code, originalUrl) {
 
 async function findByCode(code) {
   const query = `
-    SELECT id, code, original_url, created_at
+    SELECT id, code, original_url, created_at,click_count,last_clicked_at
     FROM short_urls
     WHERE code = $1
     LIMIT 1;
@@ -39,7 +39,7 @@ async function getAllUrls() {
     `
     SELECT
       id,
-      shortcode,
+      code,
       original_url,
       created_at,
       click_count,
