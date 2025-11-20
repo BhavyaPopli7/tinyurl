@@ -231,6 +231,7 @@ export default function HomePage() {
                   <th className="border-b border-slate-200 px-3 py-2">
                     Details
                   </th>
+                  <th className="border-b border-slate-200 px-3 py-2"></th>
                 </tr>
               </thead>
               <tbody>
