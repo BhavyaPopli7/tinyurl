@@ -75,8 +75,23 @@ async function getAllUrl(req, res){
   }
 };
 
+async function getUrlDetail(){
+  const {code} = req.params;
+  try{
+    const data = await findByCode(code);
+    if(!data){
+       return res.status(404).json({error:"data not found"});
+    }
+    return res.status(200).json({data:data});
+  }catch(e){
+     console.error('Error in geting url data',e);
+     return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
 module.exports = {
   shortenUrl,
   redirectToOriginal,
-  getAllUrl
+  getAllUrl,
+  getUrlDetail
 };

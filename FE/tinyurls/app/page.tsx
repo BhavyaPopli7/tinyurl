@@ -8,7 +8,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type UrlRow = {
   id: number;
-  shortcode: string;
+  code: string;
   original_url: string;
   created_at: string | null;
   click_count: number | null;
@@ -36,6 +36,7 @@ export default function HomePage() {
       const res = await fetch(`${API_URL}/getAllUrls`, { cache: "no-store" });
       if (!res.ok) throw new Error("Failed");
       const json = await res.json();
+      console.log("fetching all urls",json.data);
       setUrls(json.data || []);
     } catch (e) {
       console.error(e);
@@ -197,12 +198,12 @@ export default function HomePage() {
                   >
                     <td className="px-3 py-2 align-middle font-mono text-xs text-slate-800">
                       <a
-                        href={`${API_URL}/${u.shortcode}`}
+                        href={`${API_URL}/${u.code}`}
                         target="_blank"
                         rel="noreferrer"
                         className="underline-offset-2 hover:underline"
                       >
-                        {u.shortcode}
+                        {u.code}
                       </a>
                     </td>
                     <td className="max-w-xs px-3 py-2 align-middle text-slate-700">
@@ -225,7 +226,7 @@ export default function HomePage() {
                     </td>
                     <td className="px-3 py-2 align-middle">
                       <Link
-                        href={`/links/${u.shortcode}`}
+                        href={`/links/${u.code}`}
                         className="text-xs font-medium text-slate-900 underline-offset-2 hover:underline"
                       >
                         View
