@@ -52,9 +52,20 @@ async function getAllUrls() {
 }
 
 
+async function deleteByCode(code) {
+  const query = `
+    DELETE FROM short_urls
+    WHERE code = $1
+    RETURNING id, code, original_url, created_at, click_count, last_clicked_at;
+  `;
+  const { rows } = await pool.query(query, [code]);
+  return rows[0] || null;
+}
+
 module.exports = {
   createShortUrl,
   findByCode,
   findAndUpdate,
-  getAllUrls
+  getAllUrls,
+  deleteByCode
 };

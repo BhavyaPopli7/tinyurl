@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { createShortUrl, findByCode , findAndUpdate, getAllUrls} = require('../models/shortUrlModel');
+const { createShortUrl, findByCode , findAndUpdate, getAllUrls, deleteByCode} = require('../models/shortUrlModel');
 
 function generateUUIDShortCode() {
   return uuidv4().split('-')[0];  
@@ -89,9 +89,30 @@ async function getUrlDetail(req,res){
   }
 }
 
+async function deleteUrl(req,res){
+  const {code} = req.params;
+  try{
+    const data = await findByCode(code);
+    if(!data){
+       return res.status(404).json({error:"data not found"});
+    }
+
+    const deleted = await deleteByCode(code);
+    return res.status(200).json({
+      message: "URL deleted successfully",
+      data: deleted,
+    });
+
+  }catch(e){
+     console.error('Error in deleting url data',e);
+     return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
 module.exports = {
   shortenUrl,
   redirectToOriginal,
   getAllUrl,
-  getUrlDetail
+  getUrlDetail,
+  deleteUrl,
 };

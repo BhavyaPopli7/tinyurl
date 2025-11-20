@@ -1,5 +1,5 @@
 const express = require('express');
-const { shortenUrl, redirectToOriginal, getAllUrl, getUrlDetail } = require('../controllers/urlController');
+const { shortenUrl, redirectToOriginal, getAllUrl, getUrlDetail, deleteUrl } = require('../controllers/urlController');
 
 const router = express.Router();
 
@@ -14,5 +14,7 @@ router.get('/links/:code',getUrlDetail);
 
 // Redirect (/<shortcode>)
 router.get('/:code', redirectToOriginal);
+
+router.delete('/links/:code', deleteUrl);
 
 module.exports = router;
