@@ -62,7 +62,7 @@ async function redirectToOriginal(req, res) {
   }
 }
 
-async function getAllUrls(req, res){
+async function getAllUrl(req, res){
   try {
     const urls = await getAllUrls();
     return res.status(200).json({
@@ -78,5 +78,5 @@ async function getAllUrls(req, res){
 module.exports = {
   shortenUrl,
   redirectToOriginal,
-  getAllUrls
+  getAllUrl
 };
