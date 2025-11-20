@@ -4,17 +4,17 @@ const { shortenUrl, redirectToOriginal, getAllUrl, getUrlDetail, deleteUrl } = r
 const router = express.Router();
 
 // Create short URL
-router.post('/shorten', shortenUrl);
+router.post('/api/links', shortenUrl);
 
 //getAllUrls
-router.get('/getAllUrls', getAllUrl);
+router.get('/api/links', getAllUrl);
 
 //getURLdata
-router.get('/code/:code',getUrlDetail);
+router.get('/api/links/:code',getUrlDetail);
 
 // Redirect (/<shortcode>)
 router.get('/:code', redirectToOriginal);
 
-router.delete('/links/:code', deleteUrl);
+router.delete('/api/links/:code', deleteUrl);
 
 module.exports = router;

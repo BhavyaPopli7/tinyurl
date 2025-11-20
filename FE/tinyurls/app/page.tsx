@@ -35,7 +35,7 @@ export default function HomePage() {
     if (!API_URL) return;
     setError("");
     try {
-      const res = await fetch(`${API_URL}/getAllUrls`, { cache: "no-store" });
+      const res = await fetch(`${API_URL}/api/links`, { cache: "no-store" });
       if (!res.ok) throw new Error("Failed");
       const json = await res.json();
       console.log("fetching all urls",json.data);
@@ -61,8 +61,8 @@ export default function HomePage() {
     setSuccessCode(null);
 
     try {
-      console.log("this is api ur;",`${API_URL}/shorten`);
-      const res = await fetch(`${API_URL}/shorten`, {
+      console.log("this is api ur;",`${API_URL}/links`);
+      const res = await fetch(`${API_URL}/api/shorten`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -119,7 +119,7 @@ export default function HomePage() {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`${API_URL}/links/${code}`, {
+      const res = await fetch(`${API_URL}/api/links/${code}`, {
         method: "DELETE",
       });
 

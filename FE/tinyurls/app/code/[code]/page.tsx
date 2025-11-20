@@ -42,7 +42,7 @@ export default function LinkDetailsPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${baseUrl}/links/${code}`, {
+        const res = await fetch(`${baseUrl}/api/links/${code}`, {
           cache: "no-store",
         });
 
