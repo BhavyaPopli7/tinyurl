@@ -107,6 +107,35 @@ export default function HomePage() {
     }
   }
 
+  const handleDelete = async (code: string) => {
+    if (!API_URL) {
+      setError("API URL not configured");
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete link with code "${code}"?`
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`${API_URL}/links/${code}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || "Failed to delete link");
+      }
+
+      setUrls((prev) => prev.filter((u) => u.code !== code));
+    } catch (e: any) {
+      console.error("Error deleting link:", e);
+      setError(e.message || "Something went wrong while deleting");
+    }
+  };
+
+  
   return (
     <>
 <div className="mx-auto w-full max-w-4xl">
@@ -245,6 +274,9 @@ export default function HomePage() {
                       >
                         View
                       </Link>
+                    </td>
+                    <td className="text-red-600 text-2xl hover:text-red-400 cursor-pointer" onClick={()=>handleDelete(u.code)}>
+                      X
                     </td>
                   </tr>
                 ))}
