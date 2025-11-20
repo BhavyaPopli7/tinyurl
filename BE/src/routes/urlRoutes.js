@@ -1,5 +1,5 @@
 const express = require('express');
-const { shortenUrl, redirectToOriginal, getAllUrls } = require('../controllers/urlController');
+const { shortenUrl, redirectToOriginal, getAllUrl } = require('../controllers/urlController');
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/shorten', shortenUrl);
 
 //getAllUrls
-router.get('/getAllUrls', getAllUrls);
+router.get('/getAllUrls', getAllUrl);
 
 // Redirect (/<shortcode>)
 router.get('/:code', redirectToOriginal);
