@@ -30,6 +30,7 @@ export default function HomePage() {
   }, []);
 
   async function fetchUrls() {
+    setLoading(true);
     if (!API_URL) return;
     setError("");
     try {
@@ -41,6 +42,8 @@ export default function HomePage() {
     } catch (e) {
       console.error(e);
       setError("Could not load links. Please try again.");
+    }finally{
+      setLoading(false);
     }
   }
 
@@ -105,60 +108,63 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Add new link */}
-      <section className="mb-6 rounded-xl bg-white p-5 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-lg font-semibold tracking-tight">Add new link</h1>
-        </div>
-
-        <form
-          className="grid gap-4 md:grid-cols-[2fr,1fr,auto]"
-          onSubmit={handleCreateLink}
-        >
-          <div className="flex flex-col gap-1 md:col-span-1">
-            <label className="text-sm font-medium text-slate-700">
-              Target URL <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="url"
-              required
-              placeholder="https://TinyUrls.com"
-              value={targetUrl}
-              onChange={(e) => setTargetUrl(e.target.value)}
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none ring-slate-700/10 focus:border-slate-500 focus:ring-2"
-            />
+<div className="mx-auto w-full max-w-4xl">
+        {/* Add new link */}
+        <section className="mb-6 rounded-xl bg-white p-5 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <h1 className="text-lg font-semibold tracking-tight">Add new link</h1>
           </div>
 
-          <div className="flex flex-col gap-1 md:col-span-1">
-            <label className="text-sm font-medium text-slate-700">
-              Optional code
-            </label>
-            <input
-              type="text"
-              placeholder="fyu323bf"
-              value={customCode}
-              onChange={(e) => setCustomCode(e.target.value)}
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none ring-slate-700/10 focus:border-slate-500 focus:ring-2"
-            />
-          </div>
+          <form
+            className="grid gap-4 md:grid-cols-[2fr,1fr,auto]"
+            onSubmit={handleCreateLink}
+          >
+            <div className="flex flex-col gap-1 md:col-span-1">
+              <label className="text-sm font-medium text-slate-700">
+                Target URL <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="url"
+                required
+                placeholder="https://TinyUrls.com"
+                value={targetUrl}
+                onChange={(e) => setTargetUrl(e.target.value)}
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none ring-slate-700/10 focus:border-slate-500 focus:ring-2"
+              />
+            </div>
 
-          <div className="flex items-end md:col-span-1">
-            <button
-              type="submit"
-              disabled={loading}
-              className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-70 md:w-auto"
-            >
-              {loading ? "Creating…" : "Create link"}
-            </button>
-          </div>
-        </form>
+            <div className="flex flex-col gap-1 md:col-span-1">
+              <label className="text-sm font-medium text-slate-700">
+                Optional code
+              </label>
+              <input
+                type="text"
+                placeholder="fyu323bf"
+                value={customCode}
+                onChange={(e) => setCustomCode(e.target.value)}
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none ring-slate-700/10 focus:border-slate-500 focus:ring-2"
+              />
+            </div>
 
-        {error && (
-          <p className="mt-2 text-sm text-red-600">
-            {error}
-          </p>
-        )}
-      </section>
+            <div className="flex items-end md:col-span-1">
+              <button
+                type="submit"
+                disabled={loading}
+                className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-70 md:w-auto"
+              >
+                {loading ? "Creating…" : "Create link"}
+              </button>
+            </div>
+          </form>
+
+          {error && (
+            <p className="mt-2 text-sm text-red-600">
+              {error}
+            </p>
+          )}
+        </section>
+      </div>
+
 
       {/* Table of all links */}
       <section className="rounded-xl bg-white p-5 shadow-sm">
@@ -167,7 +173,14 @@ export default function HomePage() {
         </div>
 
         {urls.length === 0 ? (
-          <p className="text-sm text-slate-600">No links created yet.</p>
+          loading ? (
+              <div className="flex items-center gap-2 text-sm text-slate-500">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
+                <span>Loading links…</span>
+              </div>
+            ) : (
+              <p className="text-sm text-slate-600">No links created yet.</p>
+            )
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse text-sm">

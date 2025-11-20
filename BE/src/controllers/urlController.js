@@ -75,7 +75,7 @@ async function getAllUrl(req, res){
   }
 };
 
-async function getUrlDetail(){
+async function getUrlDetail(req,res){
   const {code} = req.params;
   try{
     const data = await findByCode(code);
