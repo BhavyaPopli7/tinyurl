@@ -62,7 +62,7 @@ export default function HomePage() {
 
     try {
       console.log("this is api ur;",`${API_URL}/links`);
-      const res = await fetch(`${API_URL}/api/shorten`, {
+      const res = await fetch(`${API_URL}/api/links`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
