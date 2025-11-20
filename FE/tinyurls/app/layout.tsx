@@ -1,33 +1,28 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// app/layout.tsx
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from "next";
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "TinyUrls",
-  description: "Url Generation APP",
+  description: "Simple URL shortener dashboard",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className="min-h-screen bg-slate-100 text-slate-900">
+        <header className="sticky top-0 z-20 flex h-14 items-center border-b border-slate-200 bg-white px-6 shadow-sm">
+          <Link
+            href="/"
+            className="text-xl font-semibold tracking-tight text-slate-900"
+          >
+            TinyUrls
+          </Link>
+        </header>
+
+        <main className="mx-auto max-w-4xl px-4 py-6">{children}</main>
       </body>
     </html>
   );
