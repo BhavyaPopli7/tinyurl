@@ -64,7 +64,7 @@ async function redirectToOriginal(req, res) {
 
 async function getAllUrls(req, res){
   try {
-    const urls = await UrlModel.getAllUrls();
+    const urls = await getAllUrls();
     return res.status(200).json({
       count: urls.length,
       data: urls,
