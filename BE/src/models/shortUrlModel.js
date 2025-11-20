@@ -44,7 +44,7 @@ async function getAllUrls() {
       created_at,
       click_count,
       last_clicked_at
-    FROM urls
+    FROM short_urls
     ORDER BY created_at DESC
     `
   );

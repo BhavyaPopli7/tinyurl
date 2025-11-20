@@ -33,7 +33,7 @@ export default function HomePage() {
     if (!API_URL) return;
     setError("");
     try {
-      const res = await fetch(`${API_URL}/urls`, { cache: "no-store" });
+      const res = await fetch(`${API_URL}/getAllUrls`, { cache: "no-store" });
       if (!res.ok) throw new Error("Failed");
       const json = await res.json();
       setUrls(json.data || []);
@@ -56,12 +56,13 @@ export default function HomePage() {
     setSuccessCode(null);
 
     try {
+      console.log("this is api ur;",`${API_URL}/shorten`);
       const res = await fetch(`${API_URL}/shorten`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          originalUrl: targetUrl,
-          shortcode: customCode || undefined,
+          url: targetUrl,
+          customCode: customCode || undefined,
         }),
       });
 
@@ -103,9 +104,6 @@ export default function HomePage() {
 
   return (
     <>
-    <div className="text-3xl font-bold text-emerald-400">
-      Hello Tailwind
-    </div>
       {/* Add new link */}
       <section className="mb-6 rounded-xl bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
