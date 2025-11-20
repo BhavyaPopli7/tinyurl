@@ -23,7 +23,38 @@ async function findByCode(code) {
   return rows[0] || null;
 }
 
+async function findAndUpdate(code){
+    const query =`
+      UPDATE urls
+      SET click_count = click_count + 1,
+      last_clicked_at = NOW()
+      WHERE shortcode = $1
+      `;
+     const {rows} = await pool.query(query,[code]);
+     return rows[0] || null;
+}
+
+async function getAllUrls() {
+  const result = await pool.query(
+    `
+    SELECT
+      id,
+      shortcode,
+      original_url,
+      created_at,
+      click_count,
+      last_clicked_at
+    FROM urls
+    ORDER BY created_at DESC
+    `
+  );
+  return result.rows;
+}
+
+
 module.exports = {
   createShortUrl,
   findByCode,
+  findAndUpdate,
+  getAllUrls
 };
