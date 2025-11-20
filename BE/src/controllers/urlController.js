@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { createShortUrl, findByCode , findAndUpdate} = require('../models/shortUrlModel');
+const { createShortUrl, findByCode , findAndUpdate, getAllUrls} = require('../models/shortUrlModel');
 
 function generateUUIDShortCode() {
   return uuidv4().split('-')[0];  
