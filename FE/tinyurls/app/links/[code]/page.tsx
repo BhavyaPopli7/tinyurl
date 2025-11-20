@@ -1,103 +1,178 @@
-import Link from "next/link";
+"use client";
 
-type PageProps = {
-  params: Promise<{ code: string }>;
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+type LinkData = {
+  code: string;
+  original_url?: string;
+  originalUrl?: string;
+  short_url?: string;
+  shortUrl?: string;
+  title?: string;
+  created_at?: string;
+  click_count?: number;
 };
 
-export default async function LinkDetailsPage({ params }: PageProps) {
-  const { code } = await params;
+export default function LinkDetailsPage() {
+  const params = useParams<{ code: string }>();
+  const code = params.code;
+
+  const [data, setData] = useState<LinkData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!baseUrl) {
-    throw new Error('NEXT_PUBLIC_API_URL is not set');
-  }
+  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "";
 
-  const res = await fetch(`${baseUrl}/links/${code}`, {
-    cache: 'no-store',
-  });
+  useEffect(() => {
+    if (!baseUrl) {
+      setError("NEXT_PUBLIC_API_URL is not set");
+      setLoading(false);
+      return;
+    }
+    if (!code) {
+      setError("No code provided");
+      setLoading(false);
+      return;
+    }
 
-  if (!res.ok) {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${baseUrl}/links/${code}`, {
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          setError("Link not found");
+          setData(null);
+        } else {
+          const json = await res.json();
+          setData(json.data);
+          setError(null);
+        }
+      } catch (e) {
+        console.error("Error fetching link details:", e);
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [baseUrl, code]);
+
+  if (loading) {
     return (
       <main className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-sm text-slate-600">Link not found</div>
+        <div className="flex items-center gap-2 text-sm text-slate-500">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
+          <span>Loading link details…</span>
+        </div>
       </main>
     );
   }
 
-  const { data } = await res.json();
+  if (error || !data) {
+    return (
+      <main className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-sm text-slate-600">{error || "Link not found"}</div>
+      </main>
+    );
+  }
 
   const createdAt = data.created_at ? new Date(data.created_at) : null;
   const formattedDate = createdAt
-    ? createdAt.toLocaleString('en-IN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
+    ? createdAt.toLocaleString("en-IN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
         hour12: true,
-        timeZoneName: 'shortOffset',
+        timeZoneName: "shortOffset",
       })
-    : '';
+    : "";
 
-  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || '';
-  const shortUrlDisplay = appDomain
-    ? `${appDomain}/${data.code}`
-    : data.short_url ?? data.shortUrl ?? data.code;
+  const originalUrl = data.original_url ?? data.originalUrl ?? "";
+  const shortUrlDisplay = `${process.env.NEXT_PUBLIC_API_URL}/${data.code}`
 
-  const originalUrl = data.original_url ?? data.originalUrl ?? '';
+  let hostnameTitle = "Untitled link";
+  if (originalUrl) {
+    try {
+      hostnameTitle = `${new URL(originalUrl).hostname} – untitled`;
+    } catch {
+      hostnameTitle = "Untitled link";
+    }
+  }
+
+  const fullShortUrl = shortUrlDisplay;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(fullShortUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-5xl px-4 py-6">
         {/* Back link */}
         <Link
-            href="/"
+          href="/"
+          className="
+            inline-flex items-center gap-2
+            mb-4
+            rounded-full
+            border border-slate-200
+            bg-white/70
+            px-3 py-1.5
+            text-xs font-medium
+            text-slate-600
+            shadow-sm
+            hover:bg-slate-50 hover:text-slate-800
+            hover:border-slate-300
+            focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-1
+            transition-colors
+          "
+        >
+          <span
             className="
-                inline-flex items-center gap-2
-                mb-4
-                rounded-full
-                border border-slate-200
-                bg-white/70
-                px-3 py-1.5
-                text-xs font-medium
-                text-slate-600
-                shadow-sm
-                hover:bg-slate-50 hover:text-slate-800
-                hover:border-slate-300
-                focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-1
-                transition-colors
+              inline-flex h-4 w-4 items-center justify-center
+              rounded-full
+              bg-slate-100
+              text-[10px] leading-none text-slate-500
             "
-            >
-            <span
-                className="
-                inline-flex h-4 w-4 items-center justify-center
-                rounded-full
-                bg-slate-100
-                text-[10px] leading-none text-slate-500
-                "
-            >
-                ←
-            </span>
-            <span>Back to list</span>
+          >
+            ←
+          </span>
+          <span>Back to list</span>
         </Link>
 
         {/* Card */}
         <section className="rounded-2xl bg-white shadow-sm border border-slate-100 px-6 py-5 flex flex-col gap-4">
-          {/* Top row: icon + title + actions */}
+          {/* Top: title */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
               <div>
                 <h1 className="text-lg font-semibold text-slate-900">
-                  {data.title || `${new URL(originalUrl).hostname} – untitled`}
+                  {data.title || hostnameTitle}
                 </h1>
               </div>
             </div>
           </div>
 
-          {/* Short URL */}
+          {/* Short URL + copy */}
           <div className="flex items-center gap-2">
             <a
-              href={shortUrlDisplay.startsWith('http') ? shortUrlDisplay : `https://${shortUrlDisplay}`}
+              href={fullShortUrl}
               target="_blank"
               rel="noreferrer"
               className="text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline"
@@ -106,9 +181,10 @@ export default async function LinkDetailsPage({ params }: PageProps) {
             </a>
             <button
               type="button"
+              onClick={handleCopy}
               className="inline-flex items-center rounded-full border cursor-pointer border-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-500 hover:bg-slate-50"
             >
-              📋 Copy
+              {copied ? "✅ Copied" : "📋 Copy"}
             </button>
           </div>
 
@@ -128,7 +204,7 @@ export default async function LinkDetailsPage({ params }: PageProps) {
           {/* Divider */}
           <hr className="border-slate-100" />
 
-          {/* Footer row: date + tags */}
+          {/* Footer row */}
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
             <div className="inline-flex items-center gap-2">
               <span className="text-slate-400">📅</span>

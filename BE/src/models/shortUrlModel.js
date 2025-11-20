@@ -25,10 +25,10 @@ async function findByCode(code) {
 
 async function findAndUpdate(code){
     const query =`
-      UPDATE urls
+      UPDATE short_urls
       SET click_count = click_count + 1,
       last_clicked_at = NOW()
-      WHERE shortcode = $1
+      WHERE code = $1
       `;
      const {rows} = await pool.query(query,[code]);
      return rows[0] || null;

@@ -19,6 +19,7 @@ export default function HomePage() {
   const [targetUrl, setTargetUrl] = useState("");
   const [customCode, setCustomCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingCreate,setLoadingCreate] = useState(false);
   const [urls, setUrls] = useState<UrlRow[]>([]);
   const [error, setError] = useState("");
   const [successUrl, setSuccessUrl] = useState<string | null>(null);
@@ -54,7 +55,7 @@ export default function HomePage() {
       return;
     }
 
-    setLoading(true);
+    setLoadingCreate(true);
     setError("");
     setSuccessUrl(null);
     setSuccessCode(null);
@@ -92,7 +93,7 @@ export default function HomePage() {
       console.error(e);
       setError("Something went wrong. Please try again.");
     } finally {
-      setLoading(false);
+      setLoadingCreate(false);
     }
   }
 
@@ -150,9 +151,9 @@ export default function HomePage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-70 md:w-auto"
+                className="inline-flex w-full cursor-pointer items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-70 md:w-auto"
               >
-                {loading ? "Creating…" : "Create link"}
+                {loadingCreate ? "Creating…" : "Create link"}
               </button>
             </div>
           </form>
@@ -254,49 +255,53 @@ export default function HomePage() {
       </section>
 
       {/* Modal */}
-      {showModal && successUrl && successCode && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4"
+     {showModal && successUrl && successCode && (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4"
+    onClick={() => setShowModal(false)}
+  >
+    <div
+      className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header: title + cross button */}
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold tracking-tight">
+          Your link is ready
+        </h2>
+        <button
+          type="button"
+          onClick={() => setShowModal(false)}
+          className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p className="mt-3 rounded-md bg-slate-50 px-3 py-2 text-xs text-slate-800 break-all">
+        {successUrl}
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          onClick={handleCopy}
+          className="inline-flex items-center cursor-pointer justify-center rounded-full bg-slate-900 px-4 py-1.5 text-xs font-medium text-white hover:bg-slate-800"
+        >
+          Copy link
+        </button>
+
+        <Link
+          href={`/links/${successCode}`}
+          className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-50"
           onClick={() => setShowModal(false)}
         >
-          <div
-            className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-lg font-semibold tracking-tight">
-              Your link is ready
-            </h2>
-
-            <p className="mt-3 rounded-md bg-slate-50 px-3 py-2 text-xs text-slate-800 break-all">
-              {successUrl}
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                onClick={handleCopy}
-                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-1.5 text-xs font-medium text-white hover:bg-slate-800"
-              >
-                Copy link
-              </button>
-
-              <Link
-                href={`/links/${successCode}`}
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-1.5 text-xs font-medium text-slate-800 hover:bg-slate-50"
-                onClick={() => setShowModal(false)}
-              >
-                View details
-              </Link>
-            </div>
-
-            <button
-              className="mt-3 text-xs font-medium text-slate-500 hover:text-slate-700"
-              onClick={() => setShowModal(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+          View details
+        </Link>
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 }
